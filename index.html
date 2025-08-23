@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hands-On Jobs • Toronto</title>
+    <meta name="description" content="Entry-level, hands-on, service & operations jobs across Toronto. A dignity-first, map-first directory with privacy-friendly design." />
+    <link rel="canonical" href="https://YOUR_USERNAME.github.io/hands-on-jobs-toronto/" />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Hands-On Jobs • Toronto" />
+    <meta property="og:description" content="Entry-level, hands-on, service & operations jobs across Toronto." />
+    <meta property="og:url" content="https://YOUR_USERNAME.github.io/hands-on-jobs-toronto/" />
+    <meta property="og:image" content="assets/logo.svg" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+    <!-- Leaflet core CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin="anonymous"
+    />
+    <!-- MarkerCluster CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+      crossorigin="anonymous"
+    />
+    <!-- Geocoder CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css"
+      crossorigin="anonymous"
+    />
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" role="banner">
+      <div class="container header-inner">
+        <a class="brand" href="./" aria-label="Hands-On Jobs Toronto home">
+          <img src="assets/logo.svg" alt="Hands-On Jobs Toronto" width="36" height="36" />
+          <span class="brand-title">Hands-On Jobs • Toronto</span>
+        </a>
+        <p class="tagline">Entry-level, hands-on, service & operations, on-the-job skills</p>
+      </div>
+    </header>
+
+    <main id="main" class="container layout" role="main">
+      <section class="map-section" aria-label="Map of job locations">
+        <div id="map" class="map" aria-label="Interactive map"></div>
+        <button id="use-location" class="control-btn" type="button" aria-label="Use my location">Use my location</button>
+      </section>
+
+      <aside class="list-panel" aria-label="Job listings">
+        <div class="list-header">
+          <h2 class="sr-only">Open roles</h2>
+          <div id="list-summary" aria-live="polite"></div>
+        </div>
+        <div id="listings" class="cards" aria-live="polite" aria-busy="true">
+          <!-- Cards injected here -->
+        </div>
+        <div id="empty-state" class="empty-state" hidden aria-live="polite">
+          <p><strong>No postings yet.</strong> This map highlights entry-level, hands-on, service & operations opportunities across Toronto. Check back soon.</p>
+          <p>Know a role to add? <a href="https://github.com/YOUR_USERNAME/hands-on-jobs-toronto/issues/new" target="_blank" rel="noopener">Suggest a listing</a>.</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="container">
+        <p>Map data © OpenStreetMap contributors</p>
+      </div>
+    </footer>
+
+    <!-- Leaflet core JS -->
+    <script
+      defer
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- MarkerCluster JS -->
+    <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" crossorigin="anonymous"></script>
+    <!-- Geocoder JS -->
+    <script defer src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js" crossorigin="anonymous"></script>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        const TORONTO = [43.6532, -79.3832];
+        const map = L.map('map', { scrollWheelZoom: true, worldCopyJump: true }).setView(TORONTO, 12);
+
+        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const geocoder = L.Control.geocoder({
+          defaultMarkGeocode: false,
+          placeholder: 'Search address or place…'
+        })
+          .on('markgeocode', function (e) {
+            const bbox = e.geocode.bbox;
+            const bounds = L.latLngBounds(bbox.getSouthWest(), bbox.getNorthEast());
+            map.fitBounds(bounds, { animate: true });
+          })
+          .addTo(map);
+
+        const locateBtn = document.getElementById('use-location');
+        locateBtn.addEventListener('click', function () {
+          if (!('geolocation' in navigator)) {
+            alert('Geolocation is not supported on this device.');
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const coords = [pos.coords.latitude, pos.coords.longitude];
+              map.setView(coords, Math.max(map.getZoom(), 14), { animate: true });
+              L.circleMarker(coords, { radius: 6, color: '#1a73e8', fillColor: '#1a73e8', fillOpacity: 0.6 }).addTo(map);
+            },
+            (err) => {
+              console.warn('Geolocation error:', err);
+              alert('Unable to access your location.');
+            },
+            { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+          );
+        });
+
+        const clusterGroup = L.markerClusterGroup({
+          showCoverageOnHover: false,
+          maxClusterRadius: 48
+        });
+        map.addLayer(clusterGroup);
+
+        const listingsEl = document.getElementById('listings');
+        const emptyEl = document.getElementById('empty-state');
+        const summaryEl = document.getElementById('list-summary');
+
+        function escapeHtml(text) {
+          if (typeof text !== 'string') return '';
+          return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+        }
+
+        function renderEmptyState() {
+          listingsEl.innerHTML = '';
+          listingsEl.setAttribute('aria-busy', 'false');
+          emptyEl.hidden = false;
+          summaryEl.textContent = '0 roles';
+        }
+
+        function createPopup(job) {
+          const title = escapeHtml(job.title);
+          const company = escapeHtml(job.company);
+          const neighbourhood = escapeHtml(job.neighbourhood || '');
+          const pay = escapeHtml(job.pay || '');
+          const shift = escapeHtml(job.shift || '');
+          const url = typeof job.url === 'string' ? job.url : '#';
+
+          return `
+            <div class="popup">
+              <div class="popup-title">${title}</div>
+              <div class="popup-sub">${company}${neighbourhood ? ' • ' + neighbourhood : ''}</div>
+              <div class="popup-meta">${pay ? 'Pay: ' + pay : ''}${shift ? (pay ? ' • ' : '') + 'Shift: ' + shift : ''}</div>
+              <a class="btn" href="${url}" target="_blank" rel="noopener" aria-label="Apply on original site: ${title} at ${company}">Apply on original site</a>
+            </div>
+          `;
+        }
+
+        function createCard(job, index, marker) {
+          const card = document.createElement('article');
+          card.className = 'card';
+          card.tabIndex = 0;
+          card.setAttribute('data-job-id', String(index));
+          const title = escapeHtml(job.title);
+          const company = escapeHtml(job.company);
+          const neighbourhood = escapeHtml(job.neighbourhood || '');
+          const pay = escapeHtml(job.pay || '');
+          const shift = escapeHtml(job.shift || '');
+          const url = typeof job.url === 'string' ? job.url : '#';
+
+          card.innerHTML = `
+            <div class="card-body">
+              <h3 class="card-title">${title}</h3>
+              <div class="card-sub">${company}${neighbourhood ? ' • ' + neighbourhood : ''}</div>
+              <div class="card-meta">${pay ? 'Pay: ' + pay : ''}${shift ? (pay ? ' • ' : '') + 'Shift: ' + shift : ''}</div>
+            </div>
+            <div class="card-actions">
+              <a class="btn" href="${url}" target="_blank" rel="noopener" aria-label="Apply on original site: ${title} at ${company}">Apply on original site</a>
+            </div>
+          `;
+
+          function focusMarker() {
+            const latlng = marker.getLatLng();
+            map.setView(latlng, Math.max(map.getZoom(), 15), { animate: true });
+            marker.openPopup();
+          }
+
+          card.addEventListener('click', focusMarker);
+          card.addEventListener('keypress', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); focusMarker(); } });
+
+          return card;
+        }
+
+        async function loadJobs() {
+          try {
+            const response = await fetch('data/jobs.json', { cache: 'no-store' });
+            if (!response.ok) throw new Error('Failed to load jobs');
+            const jobs = await response.json();
+
+            if (!Array.isArray(jobs) || jobs.length === 0) {
+              renderEmptyState();
+              return;
+            }
+
+            emptyEl.hidden = true;
+            listingsEl.innerHTML = '';
+            const markers = [];
+
+            jobs.forEach((job, index) => {
+              if (typeof job.lat !== 'number' || typeof job.lng !== 'number') return;
+              const marker = L.marker([job.lat, job.lng]);
+              marker.bindPopup(createPopup(job));
+              clusterGroup.addLayer(marker);
+              markers.push(marker);
+
+              const card = createCard(job, index, marker);
+              listingsEl.appendChild(card);
+            });
+
+            listingsEl.setAttribute('aria-busy', 'false');
+            const count = listingsEl.children.length;
+            summaryEl.textContent = count + (count === 1 ? ' role' : ' roles');
+
+            if (markers.length > 0) {
+              const group = L.featureGroup(markers);
+              map.fitBounds(group.getBounds().pad(0.1));
+            }
+          } catch (err) {
+            console.warn('Jobs load failed or blocked; showing empty state.', err);
+            renderEmptyState();
+          }
+        }
+
+        loadJobs();
+      });
+    </script>
+  </body>
+  </html>
+
+
