@@ -74,3 +74,4 @@ Edit `data/jobs.json`. It must be a JSON array. Each job uses this structure:
 ## License
 
 - MIT — see `LICENSE`.
+
