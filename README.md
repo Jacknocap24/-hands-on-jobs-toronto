@@ -5,8 +5,8 @@ A dignity-first, map-first directory of entry-level, hands-on, service & operati
 ## Live demo / GitHub Pages
 
 - Host on GitHub Pages from this repo main branch.
-- Replace `YOUR_USERNAME` in `index.html` canonical and the Issues link.
-- URL will be `https://YOUR_USERNAME.github.io/hands-on-jobs-toronto/`.
+- Replace `Jacknocap24` in `index.html` canonical and the Issues link.
+- URL will be `https://Jacknocap24.github.io/hands-on-jobs-toronto/`.
 
 ## Run locally
 
@@ -54,7 +54,7 @@ Edit `data/jobs.json`. It must be a JSON array. Each job uses this structure:
 
 - Listings should be reviewed for freshness at least every 72 hours.
 - Remove or update roles that are closed or significantly changed.
-- Invite reports via Issues: `https://github.com/YOUR_USERNAME/hands-on-jobs-toronto/issues/new`.
+- Invite reports via Issues: `https://github.com/Jacknocap24/hands-on-jobs-toronto/issues/new`.
 
 ## Privacy and performance
 
