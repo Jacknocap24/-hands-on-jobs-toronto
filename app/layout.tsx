@@ -29,10 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <img src={`${PUBLIC_BASE_PATH}/logo.svg`} alt="Hands-On Jobs Toronto logo" className="h-8 w-8" />
               <span className="font-semibold tracking-tight">Hands-On Jobs • Toronto</span>
             </Link>
-            <nav className="flex items-center gap-3">
-              <Link href="#alerts" className="px-3 py-2 rounded-md hover:bg-border focus-ring">Get job alerts</Link>
-              <Link href="#post" className="px-3 py-2 rounded-md border border-border hover:bg-border focus-ring">Post a job (beta)</Link>
-            </nav>
+            <div />
           </div>
         </header>
         {children}
