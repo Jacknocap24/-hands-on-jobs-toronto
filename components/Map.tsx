@@ -85,7 +85,7 @@ export default function Map({ jobs, selectedId, onSelect, userLocation }: Props)
   }, []);
 
   return (
-    <MapContainer center={[center.lat, center.lng]} zoom={12} style={{ height: '60vh', width: '100%' }}>
+    <MapContainer center={[center.lat, center.lng]} zoom={12} style={{ height: '100%', width: '100%' }}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

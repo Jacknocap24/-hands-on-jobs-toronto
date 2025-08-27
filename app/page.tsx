@@ -42,7 +42,7 @@ function ClientContent() {
       />
 
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3 rounded-lg overflow-hidden border border-border">
+        <div className="lg:col-span-3 rounded-lg overflow-hidden border border-border h-[60vh] lg:h-[calc(100vh-220px)]">
           <Map
             jobs={results}
             selectedId={selectedId}

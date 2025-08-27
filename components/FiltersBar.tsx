@@ -52,7 +52,7 @@ export function FiltersBar({ state, setQuickToggle, setAdvanced, setSort, result
 }
 
 function chipClass(active: boolean) {
-  return `px-3 py-2 rounded-full border ${active ? 'bg-brand text-white border-brand' : 'border-border hover:bg-border'} focus-ring`;
+  return `px-3 py-2 rounded-full border ${active ? 'bg-sky-500 text-white border-sky-500' : 'border-border hover:bg-border'} focus-ring`;
 }
 
 
