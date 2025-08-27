@@ -1,0 +1,24 @@
+[
+  {
+    "title": "Barista",
+    "company": "Friendly Cafe",
+    "neighbourhood": "Kensington Market",
+    "pay": "$17–$20/hr + tips",
+    "shift": "Morning",
+    "lat": 43.6542,
+    "lng": -79.4007,
+    "url": "https://example.com/jobs/barista-toronto"
+  },
+  {
+    "title": "Grocery Team Member",
+    "company": "Community Grocer",
+    "neighbourhood": "The Annex",
+    "pay": "$17–$21/hr",
+    "shift": "Afternoon",
+    "lat": 43.6683,
+    "lng": -79.4040,
+    "url": "https://example.com/jobs/grocery-team-member-toronto"
+  }
+]
+
+
