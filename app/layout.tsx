@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { PUBLIC_BASE_PATH } from '@/lib/env';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://hands-on-jobs-toronto.example'),
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-border">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 focus-ring" aria-label="Hands-On Jobs Toronto home">
-              <img src="/logo.svg" alt="Hands-On Jobs Toronto logo" className="h-8 w-8" />
+              <img src={`${PUBLIC_BASE_PATH}/logo.svg`} alt="Hands-On Jobs Toronto logo" className="h-8 w-8" />
               <span className="font-semibold tracking-tight">Hands-On Jobs • Toronto</span>
             </Link>
             <nav className="flex items-center gap-3">
