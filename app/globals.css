@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+html, body, #__next { height: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+.focus-ring:focus-visible {
+  outline: 3px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+/* Leaflet default z-index adjustments for our UI layers */
+.leaflet-top, .leaflet-bottom { z-index: 30; }
+
+/* Bottom sheet transitions */
+.sheet-enter { transform: translateY(100%); }
+.sheet-enter-active { transform: translateY(0%); transition: transform 200ms ease-in-out; }
+.sheet-exit { transform: translateY(0%); }
+.sheet-exit-active { transform: translateY(100%); transition: transform 200ms ease-in-out; }
+
+
