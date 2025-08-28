@@ -56,7 +56,7 @@ export function useJobs() {
           const shiftBadges = deriveShiftBadges(j.shift, j.shift_window);
           const payDisplay = formatPay(j as any);
           const id = j.id ?? `job-${idx}`;
-          return {
+          const result: DerivedJob = {
             ...j,
             id,
             coords: j.lat != null && j.lng != null ? { lat: j.lat, lng: j.lng } : undefined,
@@ -65,7 +65,13 @@ export function useJobs() {
             freshnessLabel: days != null ? freshnessLabel(days) : null,
             shiftBadges,
             payDisplay,
-          } as DerivedJob;
+          };
+          // Ensure lat/lng are mapped if present
+          if (j.lat != null && j.lng != null) {
+            (result as any).lat = j.lat;
+            (result as any).lng = j.lng;
+          }
+          return result;
         });
         setJobs(mapped);
       })

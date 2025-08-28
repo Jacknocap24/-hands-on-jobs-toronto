@@ -27,8 +27,25 @@ function SetupControls({ onSelect, selectedId }: { onSelect: (id: string | null)
         map.fitBounds(e.geocode.bbox);
       })
       .addTo(map);
+    const locate = L.control({ position: 'topleft' });
+    (locate as any).onAdd = function () {
+      const btn = L.DomUtil.create('button', 'leaflet-bar');
+      btn.title = 'Use my location';
+      btn.innerHTML = '◎';
+      btn.style.width = '30px';
+      btn.style.height = '30px';
+      btn.onclick = () => {
+        map.locate({ setView: true, maxZoom: 14 });
+      };
+      return btn;
+    };
+    locate.addTo(map);
+    map.on('locationfound', (e: any) => {
+      L.circle(e.latlng, { radius: 200, color: '#0ea5e9' }).addTo(map);
+    });
     return () => {
       geocoder.remove();
+      locate.remove();
     };
   }, [map]);
   useEffect(() => {

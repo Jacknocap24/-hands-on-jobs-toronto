@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { Suspense, useMemo, useRef, useState, useEffect } from 'react';
 import { FiltersBar } from '@/components/FiltersBar';
 import { JobCard } from '@/components/JobCard';
+import JobModal from '@/components/JobModal';
 import { useJobs } from '@/hooks/useJobs';
 import { useFilters } from '@/hooks/useFilters';
 
@@ -19,6 +20,7 @@ function ClientContent() {
   } = useFilters();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedJob = useMemo(() => results.find(j => j.id === selectedId) || null, [results, selectedId]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +67,7 @@ function ClientContent() {
           </div>
         </div>
       </div>
+      <JobModal job={selectedJob} onClose={() => setSelectedId(null)} />
     </div>
   );
 }
