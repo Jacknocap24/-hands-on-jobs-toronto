@@ -10,6 +10,7 @@ export type Job = {
   company?: string;
   neighbourhood?: string;
   description_html?: string;
+  location?: string;
   pay?: string;
   pay_min?: number;
   pay_max?: number;
