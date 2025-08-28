@@ -22,9 +22,9 @@ const TORONTO = { lat: 43.6532, lng: -79.3832 };
 function SetupControls({ onSelect, selectedId }: { onSelect: (id: string | null) => void; selectedId: string | null }) {
   const map = useMap();
   useEffect(() => {
-    const geocoder = (L.Control as any).geocoder({ defaultMarkGeocode: false })
+    const geocoder = (L.Control as any).geocoder({ defaultMarkGeocode: true })
       .on('markgeocode', function (e: any) {
-        map.fitBounds(e.geocode.bbox);
+        map.fitBounds(e.geocode.bbox || L.latLngBounds([e.geocode.center, e.geocode.center]));
       })
       .addTo(map);
     const Locate = (L.Control as any).extend({

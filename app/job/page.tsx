@@ -29,6 +29,8 @@ function JobClient() {
         {job.hours_band && <div><span className="font-medium">Hours:</span> {job.hours_band}</div>}
         {job.experience_req && <div><span className="font-medium">Experience:</span> {job.experience_req}</div>}
         {job.training_provided && <div><span className="font-medium">Training provided</span></div>}
+        {/* Fallback description section if pipeline adds description later */}
+        {job.learning && <div><span className="font-medium">What you’ll learn:</span> {job.learning}</div>}
       </div>
       <div className="mt-6 flex items-center gap-2">
         <a className="px-3 py-2 rounded-md bg-brand text-white focus-ring" href={job.url} target="_blank" rel="noreferrer">Apply on original site</a>

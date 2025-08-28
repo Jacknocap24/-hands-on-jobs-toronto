@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { haversineDistanceKm, LatLng } from '@/lib/geo';
 import { deriveShiftBadges, formatPay, freshnessLabel } from '@/lib/filters';
+import { neighbourhoodCentroids } from '@/lib/centroids';
 
 export type Job = {
   id?: string;
@@ -66,10 +67,14 @@ export function useJobs() {
             shiftBadges,
             payDisplay,
           };
-          // Ensure lat/lng are mapped if present
+          // Ensure lat/lng are mapped if present, else approximate from neighbourhood
           if (j.lat != null && j.lng != null) {
             (result as any).lat = j.lat;
             (result as any).lng = j.lng;
+          } else if (j.neighbourhood && neighbourhoodCentroids[j.neighbourhood]) {
+            const c = neighbourhoodCentroids[j.neighbourhood];
+            (result as any).lat = c.lat;
+            (result as any).lng = c.lng;
           }
           return result;
         });
