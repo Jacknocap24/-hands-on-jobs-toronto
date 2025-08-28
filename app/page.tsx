@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import { Suspense, useMemo, useRef, useState, useEffect } from 'react';
 import { FiltersBar } from '@/components/FiltersBar';
 import { JobCard } from '@/components/JobCard';
-import JobModal from '@/components/JobModal';
 import { useJobs } from '@/hooks/useJobs';
 import { useFilters } from '@/hooks/useFilters';
 
@@ -67,7 +66,7 @@ function ClientContent() {
           </div>
         </div>
       </div>
-      <JobModal job={selectedJob} onClose={() => setSelectedId(null)} />
+      {/* Details now open on their own page via link in each card */}
     </div>
   );
 }

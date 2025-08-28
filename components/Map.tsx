@@ -109,7 +109,16 @@ export default function Map({ jobs, selectedId, onSelect, userLocation }: Props)
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <SetupControls onSelect={onSelect} selectedId={selectedId} />
-      <ClusterLayer jobs={markers} selectedId={selectedId} onSelect={onSelect} />
+      {markers.map(job => (
+        <Marker key={job.id} position={[job.lat as number, job.lng as number]} eventHandlers={{ click: () => onSelect(job.id) }}>
+          <Popup>
+            <div className="text-sm">
+              <div className="font-medium">{job.title}</div>
+              <div className="text-muted">{job.company}</div>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
     </MapContainer>
   );
 }
