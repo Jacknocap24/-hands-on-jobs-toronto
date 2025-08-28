@@ -30,7 +30,11 @@ function JobClient() {
         {job.experience_req && <div><span className="font-medium">Experience:</span> {job.experience_req}</div>}
         {job.training_provided && <div><span className="font-medium">Training provided</span></div>}
         {/* Fallback description section if pipeline adds description later */}
-        {job.learning && <div><span className="font-medium">What you’ll learn:</span> {job.learning}</div>}
+        {job.description_html ? (
+          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: job.description_html }} />
+        ) : job.learning ? (
+          <div><span className="font-medium">What you’ll learn:</span> {job.learning}</div>
+        ) : null}
       </div>
       <div className="mt-6 flex items-center gap-2">
         <a className="px-3 py-2 rounded-md bg-brand text-white focus-ring" href={job.url} target="_blank" rel="noreferrer">Apply on original site</a>

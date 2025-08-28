@@ -25,6 +25,7 @@ type Job = {
   license_required?: string[];
   location?: string;
   neighbourhood?: string;
+  description_html?: string;
   lat?: number;
   lng?: number;
   near_transit?: boolean;
@@ -51,6 +52,7 @@ async function main() {
       const rows = (data?.jobs || []) as any[];
       for (const r of rows) {
         if (!/toronto/i.test(r?.location?.name || '')) continue;
+        const details = await fetch(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs/${r.id}`, { headers: { 'User-Agent': 'hands-on-jobs-mvp/1.0' } }).then(x => x.ok ? x.json() : null).catch(() => null);
         const j: Job = {
           id: `gh-${slug}-${r.id}`,
           title: r.title,
@@ -59,6 +61,10 @@ async function main() {
           url: r.absolute_url,
           posted_at: r.updated_at || r.created_at,
           currency: 'CAD',
+          description_html: details?.content || undefined,
+          neighbourhood: 'Downtown',
+          lat: 43.6532,
+          lng: -79.3832,
         };
         jobs.push(j);
       }

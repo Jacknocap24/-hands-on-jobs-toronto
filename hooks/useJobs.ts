@@ -9,6 +9,7 @@ export type Job = {
   title?: string;
   company?: string;
   neighbourhood?: string;
+  description_html?: string;
   pay?: string;
   pay_min?: number;
   pay_max?: number;
