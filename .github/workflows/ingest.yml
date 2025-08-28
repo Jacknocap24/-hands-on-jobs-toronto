@@ -1,4 +1,4 @@
-name: Fetch Jobs
+name: Ingest jobs hourly
 on:
   schedule:
     - cron: '15 * * * *'
@@ -13,13 +13,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci || npm i
+      - run: npm ci
       - name: Run ingestion
-        run: npx ts-node --transpile-only scripts/fetch-jobs.ts
-      - name: Commit data
+        run: npm run ingest
+      - name: Commit updated data
         run: |
-          git config user.name "jobs-bot"
-          git config user.email "jobs-bot@users.noreply.github.com"
-          git add public/data/jobs.json scripts/.geocode-cache.json || true
-          git commit -m "chore: update jobs feed" || exit 0
-          git push
+          if [[ -n "$(git status --porcelain public/data/jobs.json)" ]]; then
+            git config user.name "hands-on-jobs-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add public/data/jobs.json
+            git commit -m "chore(data): hourly ingestion update"
+            git push
+          else
+            echo "No changes"
+          fi
