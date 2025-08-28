@@ -46,7 +46,8 @@ async function main() {
     nobuhoteltoronto: 'Nobu Hotel Toronto',
   };
   const coordOverride: Record<string, { lat: number; lng: number; location?: string }> = {
-    nobuhoteltoronto: { lat: 43.6449, lng: -79.3916, location: '25 Mercer St, Toronto, ON' },
+    // Refined entrance coordinates (closer to Google/OSM POI for Nobu)
+    nobuhoteltoronto: { lat: 43.64495, lng: -79.39202, location: '25 Mercer St, Toronto, ON' },
   };
 
   // Greenhouse
