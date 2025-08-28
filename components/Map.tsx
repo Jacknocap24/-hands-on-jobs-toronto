@@ -115,6 +115,8 @@ export default function Map({ jobs, selectedId, onSelect, userLocation }: Props)
             <div className="text-sm">
               <div className="font-medium">{job.title}</div>
               <div className="text-muted">{job.company}</div>
+              {job.neighbourhood && <div>{job.neighbourhood}</div>}
+              {job.location && <div>{job.location}</div>}
             </div>
           </Popup>
         </Marker>

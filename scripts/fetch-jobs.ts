@@ -73,6 +73,25 @@ async function main() {
 
   // TODO: Lever + smartrecruiters + auto JSON-LD best-effort
 
+  // Geocode missing coords (polite rate limit, cached)
+  const cache = loadGeoCache();
+  for (const j of jobs) {
+    if (j.lat != null && j.lng != null) continue;
+    const query = j.location || `${j.company || ''} ${j.neighbourhood || ''} Toronto ON`.trim();
+    if (!query) continue;
+    const hit = cache[query];
+    if (hit) {
+      j.lat = hit.lat; j.lng = hit.lng;
+      continue;
+    }
+    const g = await geocode(query);
+    if (g) {
+      j.lat = g.lat; j.lng = g.lng;
+      cache[query] = g; saveGeoCache(cache);
+    }
+    await delay(1100); // ~1 rps
+  }
+
   // Enrich
   const enriched = jobs.map(j => ({ ...j, near_transit: j.lat != null && j.lng != null ? nearTransit(j.lat, j.lng, stops) : undefined }));
   const fresh = sortNewest(dedupe(enriched)).slice(0, 1000);
@@ -138,6 +157,33 @@ function inferRole(title?: string): string | undefined {
   if (/(general labour|labourer|landscap|grounds|site cleanup)/.test(t)) return 'General Labour';
   return undefined;
 }
+
+type GeoPoint = { lat: number; lng: number };
+const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
+async function geocode(query: string): Promise<GeoPoint | null> {
+  try {
+    const url = `${NOMINATIM}?format=json&limit=1&addressdetails=1&countrycodes=ca&q=${encodeURIComponent(query + ', Toronto, ON')}`;
+    const res = await fetch(url, { headers: { 'User-Agent': 'hands-on-jobs-mvp/1.0 (+contact@example.com)' } });
+    if (!res.ok) return null;
+    const arr = await res.json() as any[];
+    if (!arr?.length) return null;
+    const p = arr[0];
+    const lat = parseFloat(p.lat); const lng = parseFloat(p.lon);
+    if (!isFinite(lat) || !isFinite(lng)) return null;
+    return { lat, lng };
+  } catch { return null; }
+}
+
+function loadGeoCache(): Record<string, GeoPoint> {
+  try { return JSON.parse(fs.readFileSync(GEO_CACHE, 'utf8')); } catch { return {}; }
+}
+function saveGeoCache(c: Record<string, GeoPoint>) {
+  const dir = path.dirname(GEO_CACHE);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(GEO_CACHE, JSON.stringify(c, null, 2));
+}
+
+function delay(ms: number) { return new Promise(res => setTimeout(res, ms)); }
 
 main().catch(err => { console.error(err); process.exit(1); });
 
