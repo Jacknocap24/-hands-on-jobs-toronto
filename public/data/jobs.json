@@ -1,24 +1,93 @@
 [
   {
-    "title": "Barista",
-    "company": "Friendly Cafe",
-    "neighbourhood": "Kensington Market",
-    "pay": "$17–$20/hr + tips",
-    "shift": "Morning",
-    "lat": 43.6542,
-    "lng": -79.4007,
-    "url": "https://example.com/jobs/barista-toronto"
+    "id": "gh-nobuhoteltoronto-4004267008",
+    "title": "Sushi Prep Cook",
+    "company": "nobuhoteltoronto",
+    "role_family": "Restaurant & Cafe",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4004267008",
+    "posted_at": "2025-08-26T12:39:09-04:00",
+    "currency": "CAD"
   },
   {
-    "title": "Grocery Team Member",
-    "company": "Community Grocer",
-    "neighbourhood": "The Annex",
-    "pay": "$17–$21/hr",
-    "shift": "Afternoon",
-    "lat": 43.6683,
-    "lng": -79.4040,
-    "url": "https://example.com/jobs/grocery-team-member-toronto"
+    "id": "gh-nobuhoteltoronto-4890022008",
+    "title": "Pastry Chef de Partie",
+    "company": "nobuhoteltoronto",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4890022008",
+    "posted_at": "2025-08-21T14:47:47-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-nobuhoteltoronto-4889582008",
+    "title": "Director of Marketing ",
+    "company": "nobuhoteltoronto",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4889582008",
+    "posted_at": "2025-08-19T10:59:10-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-nobuhoteltoronto-4004226008",
+    "title": "Commis Chef",
+    "company": "nobuhoteltoronto",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4004226008",
+    "posted_at": "2025-08-13T09:15:12-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-nobuhoteltoronto-4568353008",
+    "title": "Lounge / In-Room Dining Server (Part-Time)",
+    "company": "nobuhoteltoronto",
+    "role_family": "Restaurant & Cafe",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4568353008",
+    "posted_at": "2025-08-11T11:52:26-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-nobuhoteltoronto-4618726008",
+    "title": "Maintenance Technician",
+    "company": "nobuhoteltoronto",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4618726008",
+    "posted_at": "2025-08-07T10:30:53-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-nobuhoteltoronto-4006796008",
+    "title": "Guest Services Attendant ",
+    "company": "nobuhoteltoronto",
+    "url": "https://job-boards.greenhouse.io/nobuhoteltoronto/jobs/4006796008",
+    "posted_at": "2025-07-21T13:12:50-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-quantumcoffee-5716168003",
+    "title": "Barista ",
+    "company": "quantumcoffee",
+    "role_family": "Restaurant & Cafe",
+    "url": "https://job-boards.greenhouse.io/quantumcoffee/jobs/5716168003",
+    "posted_at": "2024-08-09T10:59:04-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-quantumcoffee-5716249003",
+    "title": "Keyholder",
+    "company": "quantumcoffee",
+    "url": "https://job-boards.greenhouse.io/quantumcoffee/jobs/5716249003",
+    "posted_at": "2024-08-09T10:59:04-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-quantumcoffee-5716333003",
+    "title": "Shift Supervisor",
+    "company": "quantumcoffee",
+    "url": "https://job-boards.greenhouse.io/quantumcoffee/jobs/5716333003",
+    "posted_at": "2024-08-09T10:59:04-04:00",
+    "currency": "CAD"
+  },
+  {
+    "id": "gh-quantumcoffee-5716335003",
+    "title": "Supervisor",
+    "company": "quantumcoffee",
+    "url": "https://job-boards.greenhouse.io/quantumcoffee/jobs/5716335003",
+    "posted_at": "2024-08-09T10:59:04-04:00",
+    "currency": "CAD"
   }
 ]
-
-
