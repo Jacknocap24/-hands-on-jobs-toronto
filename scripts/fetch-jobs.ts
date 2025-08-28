@@ -41,6 +41,13 @@ async function main() {
   const stops = loadStops();
   const targets = loadTargets();
   const jobs: Job[] = [];
+  // Known fixes/aliases for better geocoding
+  const companyAlias: Record<string, string> = {
+    nobuhoteltoronto: 'Nobu Hotel Toronto',
+  };
+  const coordOverride: Record<string, { lat: number; lng: number; location?: string }> = {
+    nobuhoteltoronto: { lat: 43.6449, lng: -79.3916, location: '25 Mercer St, Toronto, ON' },
+  };
 
   // Greenhouse
   for (const slug of targets?.targets?.greenhouse || []) {
@@ -56,15 +63,16 @@ async function main() {
         const j: Job = {
           id: `gh-${slug}-${r.id}`,
           title: r.title,
-          company: r?.company?.name || slug,
+          company: companyAlias[slug] || r?.company?.name || slug,
           role_family: inferRole(r.title),
           url: r.absolute_url,
           posted_at: r.updated_at || r.created_at,
           currency: 'CAD',
           description_html: details?.content || undefined,
-          neighbourhood: 'Downtown',
-          lat: 43.6532,
-          lng: -79.3832,
+          neighbourhood: r?.location?.name || 'Downtown',
+          location: coordOverride[slug]?.location,
+          lat: coordOverride[slug]?.lat,
+          lng: coordOverride[slug]?.lng,
         };
         jobs.push(j);
       }
