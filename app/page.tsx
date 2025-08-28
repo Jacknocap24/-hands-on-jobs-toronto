@@ -20,12 +20,12 @@ function ClientContent() {
   } = useFilters();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selectedJob = useMemo(() => results.find(j => j.id === selectedId) || null, [results, selectedId]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => state.applyAll(jobs, userLocation), [state, jobs, userLocation]);
   const results = useMemo(() => state.applySort(filtered, userLocation), [state, filtered, userLocation]);
+  const selectedJob = useMemo(() => results.find(j => j.id === selectedId) || null, [results, selectedId]);
 
   useEffect(() => {
     if (selectedId && !results.some(j => j.id === selectedId)) {
