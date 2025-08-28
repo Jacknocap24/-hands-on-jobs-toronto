@@ -1,8 +1,17 @@
 "use client";
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useJobs } from '@/hooks/useJobs';
 
 export default function JobPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-3xl px-4 sm:px-6 py-8">Loading…</div>}>
+      <JobClient />
+    </Suspense>
+  );
+}
+
+function JobClient() {
   const params = useSearchParams();
   const id = params.get('id');
   const { jobs } = useJobs();
