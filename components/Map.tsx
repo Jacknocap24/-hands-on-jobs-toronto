@@ -90,7 +90,7 @@ function ClusterLayer({ jobs, selectedId, onSelect }: { jobs: DerivedJob[]; sele
 
 export default function Map({ jobs, selectedId, onSelect, userLocation }: Props) {
   const center = userLocation ?? TORONTO;
-  const markers = useMemo(() => jobs.filter(j => typeof j.lat === 'number' && typeof j.lng === 'number'), [jobs]);
+  const markers = useMemo(() => jobs.filter(j => j.lat != null && j.lng != null), [jobs]);
 
   useEffect(() => {
     // Fix default icon paths for Leaflet in Next.js
