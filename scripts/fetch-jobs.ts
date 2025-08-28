@@ -45,9 +45,8 @@ async function main() {
   const companyAlias: Record<string, string> = {
     nobuhoteltoronto: 'Nobu Hotel Toronto',
   };
-  const coordOverride: Record<string, { lat: number; lng: number; location?: string }> = {
-    // Refined entrance coordinates (closer to Google/OSM POI for Nobu)
-    nobuhoteltoronto: { lat: 43.64495, lng: -79.39202, location: '25 Mercer St, Toronto, ON' },
+  const locationOverride: Record<string, string> = {
+    nobuhoteltoronto: '25 Mercer St, Toronto, ON',
   };
 
   // Greenhouse
@@ -71,10 +70,10 @@ async function main() {
           currency: 'CAD',
           description_html: details?.content || undefined,
           neighbourhood: r?.location?.name || 'Downtown',
-          location: coordOverride[slug]?.location,
-          lat: coordOverride[slug]?.lat,
-          lng: coordOverride[slug]?.lng,
+          location: locationOverride[slug],
         };
+        // force re-geocoding for known venues to avoid stale cache
+        (j as any).forceRegeo = slug === 'nobuhoteltoronto';
         jobs.push(j);
       }
     } catch {}
@@ -89,7 +88,7 @@ async function main() {
     const query = j.location || `${j.company || ''} ${j.neighbourhood || ''} Toronto ON`.trim();
     if (!query) continue;
     const hit = cache[query];
-    if (hit) {
+    if (hit && !(j as any).forceRegeo) {
       j.lat = hit.lat; j.lng = hit.lng;
       continue;
     }
