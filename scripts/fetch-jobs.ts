@@ -1,6 +1,7 @@
 /* Minimal, compliant ingestion script (skeleton matching your spec). */
 import fs from 'node:fs';
 import path from 'node:path';
+import yaml from 'yaml';
 
 type Job = {
   id: string;
@@ -33,38 +34,43 @@ const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'public', 'data', 'jobs.json');
 const GEO_CACHE = path.join(ROOT, 'scripts', '.geocode-cache.json');
 const TTC_STOPS = path.join(ROOT, 'scripts', 'ttc-stops.json');
+const TARGETS = path.join(ROOT, 'scripts', 'targets.yaml');
 
 async function main() {
   const stops = loadStops();
-  const now = new Date().toISOString();
-  const sample: Job[] = [
-    {
-      id: 'sample-keep-pipeline-1',
-      title: 'Barista',
-      company: 'Sample Cafe',
-      role_family: 'Restaurant & Cafe',
-      role_type: 'Restaurant/Bar',
-      url: 'https://example.com/jobs/barista-toronto',
-      posted_at: now,
-      pay: '$18–$20/hr + tips',
-      pay_min: 18,
-      pay_max: 20,
-      currency: 'CAD',
-      tips: true,
-      shift: 'Morning',
-      shift_window: 'Morning',
-      hours_band: '20–35',
-      experience_req: 'None',
-      training_provided: true,
-      license_required: ['Smart Serve'],
-      location: 'Kensington Market, Toronto, ON',
-      neighbourhood: 'Kensington',
-      lat: 43.6542,
-      lng: -79.4007,
-      near_transit: nearTransit(43.6542, -79.4007, stops),
-    },
-  ];
-  writeOut(sample);
+  const targets = loadTargets();
+  const jobs: Job[] = [];
+
+  // Greenhouse
+  for (const slug of targets?.targets?.greenhouse || []) {
+    const url = `https://boards-api.greenhouse.io/v1/boards/${slug}/jobs`;
+    try {
+      const resp = await fetch(url, { headers: { 'User-Agent': 'hands-on-jobs-mvp/1.0' } });
+      if (!resp.ok) continue;
+      const data = await resp.json() as any;
+      const rows = (data?.jobs || []) as any[];
+      for (const r of rows) {
+        if (!/toronto/i.test(r?.location?.name || '')) continue;
+        const j: Job = {
+          id: `gh-${slug}-${r.id}`,
+          title: r.title,
+          company: r?.company?.name || slug,
+          role_family: inferRole(r.title),
+          url: r.absolute_url,
+          posted_at: r.updated_at || r.created_at,
+          currency: 'CAD',
+        };
+        jobs.push(j);
+      }
+    } catch {}
+  }
+
+  // TODO: Lever + smartrecruiters + auto JSON-LD best-effort
+
+  // Enrich
+  const enriched = jobs.map(j => ({ ...j, near_transit: j.lat != null && j.lng != null ? nearTransit(j.lat, j.lng, stops) : undefined }));
+  const fresh = sortNewest(dedupe(enriched)).slice(0, 1000);
+  writeOut(fresh);
 }
 
 function loadStops(): { lat: number; lng: number }[] {
@@ -93,6 +99,38 @@ function writeOut(rows: Job[]) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(rows, null, 2));
   console.log(`[fetch-jobs] wrote ${rows.length} → ${OUT}`);
+}
+
+function loadTargets(): any | null {
+  if (!fs.existsSync(TARGETS)) return null;
+  try { return yaml.parse(fs.readFileSync(TARGETS, 'utf8')); } catch { return null; }
+}
+
+function dedupe(rows: Job[]): Job[] {
+  const seen = new Set<string>();
+  const out: Job[] = [];
+  for (const r of rows) {
+    const key = `${(r.company||'').toLowerCase()}|${(r.title||'').toLowerCase()}|${Math.round((r.lat||0)*1000)}|${Math.round((r.lng||0)*1000)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(r);
+  }
+  return out;
+}
+
+function sortNewest(rows: Job[]) { return [...rows].sort((a,b) => (Date.parse(b.posted_at||'')||0) - (Date.parse(a.posted_at||'')||0)); }
+
+function inferRole(title?: string): string | undefined {
+  if (!title) return undefined;
+  const t = title.toLowerCase();
+  if (/(server|wait|barista|host|busser|dish|line cook|prep|crew)/.test(t)) return 'Restaurant & Cafe';
+  if (/(retail|sales associate|cashier|merch|stock|grocery|clerk)/.test(t)) return 'Retail';
+  if (/(warehouse|picker|packer|parcel|loader|forklift|inventory|ship|receive)/.test(t)) return 'Warehouse & Logistics';
+  if (/(clean|janit|custod|housekeep|porter)/.test(t)) return 'Cleaning & Facilities';
+  if (/(hotel|front desk|banquet|event|concession)/.test(t)) return 'Hotel & Events';
+  if (/(mover|moving|delivery|courier|driver)/.test(t)) return 'Moving & Delivery';
+  if (/(general labour|labourer|landscap|grounds|site cleanup)/.test(t)) return 'General Labour';
+  return undefined;
 }
 
 main().catch(err => { console.error(err); process.exit(1); });

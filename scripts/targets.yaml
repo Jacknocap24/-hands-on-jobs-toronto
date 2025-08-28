@@ -1,0 +1,72 @@
+targets:
+  # ✅ Exact ATS boards (most reliable)
+  greenhouse:
+    - "quantumcoffee"          # confirmed GH board (Toronto café roles)
+    - "nobuhoteltoronto"       # confirmed GH board (hotel/hospitality)
+
+  lever: []                    # add slugs when you find jobs.lever.co/<slug>
+
+  smartrecruiters:
+    # Public company identifiers if available; add a token in GitHub Secrets if needed
+    - { id: "loblaw" }         # grocery & distribution (verify endpoint returns 200 or add token)
+    # - { id: "shoppersdrugmart", token: "${SMARTRECRUITERS_TOKEN}" }  # example; use only if 401/403 without token
+
+  # 🟡 Auto-resolve from career URLs (best effort; respects robots/ToS; may skip)
+  auto:
+    # Coffee / quick-service / restaurants
+    - { url: "https://www.timhortons.ca/careers", city_filter: "Toronto" }
+    - { url: "https://www.mcdonalds.com/ca/en-ca/careers.html", city_filter: "Toronto" }
+    - { url: "https://www.starbucks.ca/careers", city_filter: "Toronto" }
+    - { url: "https://www.cactusclubcafe.com/careers/", city_filter: "Toronto" }
+    - { url: "https://earls.ca/careers", city_filter: "Toronto" }
+    - { url: "https://thekeg.com/careers", city_filter: "Toronto" }
+    - { url: "https://moxies.com/careers", city_filter: "Toronto" }
+
+    # Retail & grocery
+    - { url: "https://www.loblaws.ca/careers", city_filter: "Toronto" }
+    - { url: "https://www.shoppersdrugmart.ca/careers", city_filter: "Toronto" }
+    - { url: "https://www.metro.ca/en/careers", city_filter: "Toronto" }
+    - { url: "https://www.sobeys.com/en/careers/", city_filter: "Toronto" }
+    - { url: "https://careers.walmart.ca/results", city_filter: "Toronto" }
+    - { url: "https://www.canadiantire.ca/en/careers.html", city_filter: "Toronto" }
+    - { url: "https://www.dollarama.com/en-CA/corp/careers", city_filter: "Toronto" }
+    - { url: "https://www.lcbo.com/content/lcbo/en/corporate-pages/careers.html", city_filter: "Toronto" }
+
+    # Warehousing & logistics
+    - { url: "https://www.purolator.com/en/careers", city_filter: "Toronto" }
+    - { url: "https://www.canadapost-postescanada.ca/cpc/en/careers.page", city_filter: "Toronto" }
+    - { url: "https://www.upsjobs.com/location-results/?location=Toronto%2C%20ON", city_filter: "Toronto" }
+    - { url: "https://careers.fedex.com/", city_filter: "Toronto" }
+    - { url: "https://hiring.amazon.ca/", city_filter: "Toronto" }
+
+    # Cleaning / facilities / food services
+    - { url: "https://www.compass-canada.com/careers/", city_filter: "Toronto" }
+    - { url: "https://ca.sodexo.com/careers", city_filter: "Toronto" }
+    - { url: "https://www.gdicanada.com/careers/", city_filter: "Toronto" }
+    - { url: "https://www.bgis.com/careers", city_filter: "Toronto" }
+
+    # Hotels & venues (some may use brand group portals)
+    - { url: "https://nobuhoteltoronto.com/careers/", city_filter: "Toronto" }  # GH board already listed above
+    - { url: "https://careers.accor.com/", city_filter: "Toronto" }             # Fairmont Royal York (via Accor)
+    - { url: "https://careers.fourseasons.com/", city_filter: "Toronto" }
+    - { url: "https://careers.marriott.com/", city_filter: "Toronto" }
+    - { url: "https://www.hilton.com/en/corporate/careers/", city_filter: "Toronto" }
+    - { url: "https://www.hyatt.com/careers", city_filter: "Toronto" }
+    - { url: "https://www.mtccc.com/careers/", city_filter: "Toronto" }         # Metro Toronto Convention Centre
+    - { url: "https://www.mlse.com/careers", city_filter: "Toronto" }           # Scotiabank Arena (MLSE)
+    - { url: "https://www.rogerscentre.com/careers", city_filter: "Toronto" }
+
+ingest_policy:
+  city_filter: "Toronto"
+  geofence: "GTA"
+  ttl_hours: 72
+  role_families:
+    - restaurant-cafe
+    - retail
+    - warehouse-logistics
+    - cleaning-facilities
+    - hotel-events
+    - moving-delivery
+    - general-labour
+
+
