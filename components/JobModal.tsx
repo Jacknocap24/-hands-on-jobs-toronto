@@ -26,7 +26,6 @@ export default function JobModal({ job, onClose }: Props) {
           {job.hours_band && <div><span className="font-medium">Hours:</span> {job.hours_band}</div>}
           {job.experience_req && <div><span className="font-medium">Experience:</span> {job.experience_req}</div>}
           {job.training_provided && <div><span className="font-medium">Training provided</span></div>}
-          {job.license_required && <div><span className="font-medium">Licenses:</span> {Array.isArray(job.license_required) ? job.license_required.join(', ') : job.license_required}</div>}
           {job.learning && <div><span className="font-medium">What you’ll learn:</span> {job.learning}</div>}
         </div>
 
