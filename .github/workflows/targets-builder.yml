@@ -1,0 +1,82 @@
+name: Targets Builder
+
+on:
+  schedule:
+    - cron: '0 * * * *' # hourly
+  workflow_dispatch:
+    inputs:
+      input_url_list:
+        description: 'Optional CSV/JSON URL list content (paste)'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Prepare input list (if provided)
+        id: input
+        run: |
+          if [ -n "${{ github.event.inputs.input_url_list }}" ]; then
+            echo "${{ github.event.inputs.input_url_list }}" > seeds.csv
+            echo "file=seeds.csv" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run targets builder
+        run: |
+          if [ -f seeds.csv ]; then
+            npm run build:targets -- --input=seeds.csv
+          else
+            npm run build:targets
+          fi
+
+      - name: Merge generated into scripts/targets.yaml
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const yaml = require("yaml");
+            const base = yaml.parse(fs.readFileSync("scripts/targets.yaml", "utf8"));
+            const gen = yaml.parse(fs.readFileSync("scripts/targets.generated.yaml", "utf8"));
+            base.targets = base.targets || {};
+            const ensureArr = (v) => Array.isArray(v) ? v : (v ? [v] : []);
+            const set = (k) => {
+              const a = new Set([...(base.targets[k]||[]).map(x => typeof x === "string" ? x : x.id), ...(gen.targets?.[k]||[]).map(x => typeof x === "string" ? x : x.id)]);
+              if (k === "smartrecruiters") base.targets[k] = [...a].map(id => ({ id }));
+              else base.targets[k] = [...a];
+            };
+            set("greenhouse"); set("lever"); set("smartrecruiters");
+            fs.writeFileSync("scripts/targets.yaml", yaml.stringify(base));
+          '
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/targets-builder-update
+          title: 'chore: update targets.yaml via Targets Builder'
+          body: |
+            This PR updates `scripts/targets.yaml` from the latest run of Targets Builder.
+
+            - Generated: `scripts/targets.generated.yaml`
+            - Skipped log: `scripts/targets.skipped.json`
+          commit-message: 'chore: update targets.yaml via Targets Builder'
+          add-paths: |
+            scripts/targets.yaml
+            scripts/targets.generated.yaml
+            scripts/targets.skipped.json
+
