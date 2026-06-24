@@ -8,7 +8,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "ingest": "ts-node --transpile-only -P scripts/tsconfig.scripts.json scripts/fetch-jobs.ts"
+    "ingest": "ts-node --transpile-only -P scripts/tsconfig.scripts.json scripts/fetch-jobs.ts",
+    "build:targets": "ts-node --transpile-only -P scripts/tsconfig.scripts.json scripts/build-targets.ts"
   },
   "keywords": [],
   "author": "",
